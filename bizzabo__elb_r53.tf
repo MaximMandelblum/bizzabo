@@ -1,6 +1,5 @@
 resource "aws_elb" "bizzabo" {
   name = "bizzabo" 
-  count = 2
   subnets = [aws_subnet.public_subnet[0].id, aws_subnet.public_subnet[1].id]
   security_groups = [aws_security_group.bizzabo_sg.id]
 
@@ -48,5 +47,6 @@ resource "aws_route53_record" "bizza" {
   name    = "bizzabo.${aws_route53_zone.private.name}"
   type    = "CNAME"
   ttl     = "60"
-  records = [aws_elb.bizzabo[0].dns_name, aws_elb.bizzabo[1].dns_name]
+  records = [aws_elb.bizzabo.dns_name]
+  #records = [aws_elb.bizzabo[0].dns_name, aws_elb.bizzabo[1].dns_name]
 }
