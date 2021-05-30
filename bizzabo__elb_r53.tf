@@ -1,8 +1,8 @@
 resource "aws_elb" "bizzabo" {
   name = "bizzabo" 
-  
-  subnets = [module.vpc.public_subnet_ids[0], module.vpc.public_subnet_ids[1]]
-  security_groups = [aws_security_group.sg.id]
+  count = 2
+  subnets = [aws_subnet.public_subnet[0].id, aws_subnet.public_subnet[1].id]
+  security_groups = [aws_security_group.bizzabo_sg.id]
 
 
   listener {
@@ -38,14 +38,15 @@ resource "aws_route53_zone" "private" {
   name = "test.com"
 
   vpc {
-    vpc_id = module.vpc.vpc_id
+    vpc_id = aws_vpc.vpc_main.id
   }
 }
 
-resource "aws_route53_record" "bizzabo" {
-  zone_id = aws_route53_zone.public.zone_id
-  name    = "bizzabo.${aws_route53_zone.public.name}"
-  type    = "A"
+
+resource "aws_route53_record" "bizza" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "bizzabo.${aws_route53_zone.private.name}"
+  type    = "CNAME"
   ttl     = "60"
-  records = [aws_elb.bizzabo.public_ip]
+  records = [aws_elb.bizzabo[0].dns_name, aws_elb.bizzabo[1].dns_name]
 }

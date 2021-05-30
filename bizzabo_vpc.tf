@@ -68,6 +68,15 @@ resource "aws_route_table_association" "rta-subnet1-public" {
   route_table_id = aws_route_table.rt_public.id 
 }
 
+# Internet Gateway Creation
+
+resource "aws_internet_gateway"  "vpc_igw" {
+
+  vpc_id = aws_vpc.vpc_main.id
+  tags = {
+    Name = "myIGW"
+  }  
+}
 
 #Nat Gateway Creation for private subnets 
 
@@ -105,4 +114,36 @@ resource "aws_route_table_association" "rta-subnet2-private" {
   count = 2
   subnet_id = aws_subnet.private_subnet[count.index].id 
   route_table_id = aws_route_table.rt_private[count.index].id 
+}
+
+#Bizzabo Security Group
+resource "aws_security_group" "bizzabo_sg" {
+  name        = "bizzabo_sg"
+  description = "Security group for bizzabo ingress"
+  vpc_id      = aws_vpc.vpc_main.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow all traffic to HTTP port 443
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  # Allow all traffic to HTTP port 80
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  
+
 }

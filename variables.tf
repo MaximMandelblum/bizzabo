@@ -1,35 +1,38 @@
 # AWS Regions / Zones
 
 variable "aws_region" {
-  type = string
-  description = "AWS region which should be used"
+  default = "us-east-1"
+  type    = string
 }
 
-
+variable "key_name" {
+  default = "max_imperva"
+  type = string
+}
 
 # Private subnets
 
 variable "subnet2_private" {
   description = "Create private  subnets for bizzabo"
-  type = list
+  default = ["10.0.100.0/24", "10.0.150.0/24"]
 }
 
 # Public  subnets
 
 variable "subnet1_public" {
   description = "Create public  subnets for bizzabo"
-  type = list
+  default = ["10.0.1.0/24" , "10.0.50.0/24"]
 }
 
 # Resource naming
 
 variable "vpc_name" {
   description = "Name of bizzabo VPC"
-  type = string
+  default = "vpc_main"
 }
 
 variable "cidr_network" {
-  type = string
+  default = "10.0.0.0/16"
   description = "CIDR of the bizzabo VPC"
 
   }
